@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addTodo } from "../redux/slices/todoSlices"
+import { postTodo } from "../redux/slices/actions"
 
 export default function Input() {
     const dispatch = useDispatch()
     const [input, setInput] = useState("")
     const handleClick = () => {
         if (input === "") return
-        dispatch(addTodo(input))
+        dispatch(postTodo(input));
         setInput("")
     }
     return (

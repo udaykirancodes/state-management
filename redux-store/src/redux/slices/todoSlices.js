@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit"
 
+import { fetchTodos , postTodo} from "./actions";
+
 const initialState = {
     todos: [],
+    state : null 
 }
 
 export const todoSlice = createSlice({
@@ -11,7 +14,7 @@ export const todoSlice = createSlice({
         addTodo: (state, action) => {
             state.todos.push({
                 id: nanoid(),
-                text: action.payload,
+                title: action.payload,
             })
             console.log("added successfully")
         },
@@ -24,7 +27,7 @@ export const todoSlice = createSlice({
                 if (action.payload.id === todo.id) {
                     return {
                         ...todo,
-                        text: action.payload.text,
+                        title: action.payload.title,
                     }
                 }
                 return todo
@@ -32,7 +35,27 @@ export const todoSlice = createSlice({
             console.log("deleted successfully")
         },
     },
+    extraReducers : (builder) => {
+        builder.addCase(fetchTodos.fulfilled , (state , action) => {
+            console.log(action.payload);
+            state.todos = action.payload
+            state.state = null;
+        })
+        .addCase(fetchTodos.rejected , (state , action) => {
+            console.log();
+        })
+        .addCase(fetchTodos.pending , (state , action) => {
+            state.state = 'Loading...'
+        })
+        .addCase(postTodo.pending , (state , action) => {
+            state.state = 'Uploading...'
+        })
+        .addCase(postTodo.fulfilled , (state, action) => {
+            state.todos.push(action.payload);
+            state.state = null
+        })
+    }
 })
 
-export const { addTodo, removeTodo, editTodo } = todoSlice.actions
+export const { addTodo, removeTodo, editTodo} = todoSlice.actions
 export default todoSlice.reducer
